@@ -1,0 +1,30 @@
+{
+    "name": "wemakecustom/symfony-app-loader",
+    "description": "Composer script handling your ignored app_loader.ini file",
+    "keywords": ["parameters management"],
+    "homepage": "https://github.com/wemakecustom/symfony-app-loader",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sébastien Lavoie",
+            "email": "seb@wemakecustom.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/framework-bundle": ">=2.3"
+    },
+    "require-dev": {
+        "composer/composer": "*"
+    },
+    "autoload": {
+        "psr-0": { "WMC\\AppLoader": "" }
+    },
+    "target-dir": "WMC/AppLoader",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}
