@@ -7,15 +7,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Debug\Debug;
 
 /**
- * Instantiates a Symfony Kernel
+ * Instantiates a Symfony Kernel and run the Request handler
  * Loads a default configuration containing the environment and other machine-specific parameters
- * 
- * Example,in web/app_dev.php :
- * 
- * $loader = require_once __DIR__.'/../app/bootstrap.php.cache';
- * $app_loader = new AppLoader(__DIR__ . '/../app', $loader);
- * $app_loader->environment = 'dev';
- * $app_loader->run();
  */
 class AppLoader
 {
@@ -139,13 +132,23 @@ class AppLoader
         }
         $this->processOptions();
 
+        $this->beforeKernel();
+        $this->loadKernel();
+        $this->afterKernel();
+        $this->handleRequest();
+    }
+
+    protected function beforeKernel()
+    {
         $this->enforceIpProtection();
         $this->enableDebug();
         $this->enableUmaskFix();
         $this->enableApcClassLoader();
-        $this->loadKernel();
+    }
+
+    protected function afterKernel()
+    {
         $this->enableHttpCache();
-        $this->handleRequest();
     }
 
     /**

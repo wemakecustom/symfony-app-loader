@@ -24,6 +24,11 @@ class ScriptHandler
 
         if (empty($extras['wmc-app-loader']['dist-file'])) {
             $distFile = $realFile.'.dist';
+
+            if (!is_file($distFile)) {
+                // using packaged dist file
+                $distFile = __DIR__ . '/../../../app/config/app_loader.ini.dist';
+            }
         } else {
             $distFile = $extras['wmc-app-loader']['dist-file'];
         }

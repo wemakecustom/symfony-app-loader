@@ -19,9 +19,8 @@
         "composer/composer": "*"
     },
     "autoload": {
-        "psr-0": { "WMC\\AppLoader": "" }
+        "psr-0": { "WMC\\AppLoader": "src/" }
     },
-    "target-dir": "WMC/AppLoader",
     "extra": {
         "branch-alias": {
             "dev-master": "1.0.x-dev"

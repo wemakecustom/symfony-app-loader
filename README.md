@@ -1,17 +1,20 @@
-# Managing your ignored app_loader.ini with Composer
+# Unified front controller for Symfony.
 
-This tool allows you to manage your parameters required for the loading of
-the front controllers. When running a composer install or update, it will
-ask for your parameters, very similar to incenteev/composer-parameter-handler.
+This package provides a unified front controller for Symfony, merging all the
+options into a single AppLoader. The options are all overridable using a custom
+front controller or extending the AppLoader.
 
-## Usage
+This tool uses a script that will ask for your parameters when running composer
+install or update, very similar to incenteev/composer-parameter-handler.
+
+## Installation
 
 Add the following in your root composer.json file:
 
 ```json
 {
     "require": {
-        "wemakecustom/symfony-app-loader": "1.0.*@dev"
+        "wemakecustom/symfony-app-loader": "~1.0@dev"
     },
     "scripts": {
         "post-install-cmd": [
@@ -24,9 +27,24 @@ Add the following in your root composer.json file:
 }
 ```
 
+Replace ``web/app.php`` with the one in this package.
+See the section **Overridding options using front controllers** for more details.
+
+Replace ``app/console`` with the one in this package.
+
+Ignore your ini file in .gitignore:
+```
+/app/config/app_loader.ini
+```
+
+## Composer script configuration
+
+### Different file and dist file
+
 The ``app/config/app_loader.ini`` will then be created or updated by the
 composer script, to match the structure of the dist file ``app/config/app_loader.ini.dist``
-by asking you the missing parameters.
+by asking you the missing parameters. If no ``app/config/app_loader.ini.dist``
+is available in your Symfony installation, it will use a default one.
 
 By default, the dist file is assumed to be in the same place than the parameters
 file, suffixed by ``.dist``. This can be changed in the configuration:
@@ -42,15 +60,18 @@ file, suffixed by ``.dist``. This can be changed in the configuration:
 }
 ```
 
+### Keep outdated parameters
+
 The script handler will ask you interactively for parameters which are missing
 in the parameters file, using the value of the dist file as default value.
 All prompted values are parsed as inline INI, to allow you to define ``true``,
-``false``, ``null`` or numbers easily.
+``false`` or numbers easily.
 If composer is run in a non-interactive mode, the values of the dist file
 will be used for missing parameters.
 
-Warning: This script removes outdated params from ``app_loader.ini`` which are not in ``app_loader.ini.dist``
-If you need to keep outdated params you can use `keep-outdated` param in the configuration:
+Warning: This script removes outdated params from ``app_loader.ini`` which are 
+not in ``app_loader.ini.dist``. If you need to keep outdated params you can use
+`keep-outdated` param in the configuration:
 ```json
 {
     "extra": {
@@ -61,7 +82,7 @@ If you need to keep outdated params you can use `keep-outdated` param in the con
 }
 ```
 
-## Using environment variables to set the parameters
+### Using environment variables to set the parameters
 
 For your prod environment, using an interactive prompt may not be possible
 when deploying. In this case, you can rely on environment variables to provide
@@ -90,3 +111,19 @@ INI values to allows specifying ``false``, ``true`` or numbers easily.
 Warning: This parameters handler will overwrite any comments or spaces into
 your app_loader.ini file so handle with care. So if you want to give format
 and comments to your parameter's file you should do it on your dist version.
+
+## Customizing behavior
+
+### Overridding options using front controllers
+
+You can find the standard controllers in `web/app*.php`. It is a good idea to
+copy them all for a development configuration. While not strictly required,
+it may be good to leave only web/app.php in a production environment.
+
+As you can see in the examples, you can override any option after instantiating
+the AppLoader, but before `$app_loader->run();`
+
+### Overridding behavior by extending AppLoader
+
+The provided AppLoader is fully overridable. You can extend it and modify your
+fron controllers to use yours instead. See app/AppLoader for an example.

@@ -1,0 +1,36 @@
+#!/usr/bin/env php
+<?php
+
+set_time_limit(0);
+
+require_once __DIR__.'/bootstrap.php.cache';
+require_once __DIR__.'/AppKernel.php';
+
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Debug\Debug;
+
+$environment = 'dev';
+
+$config_file = __DIR__ . '/config/app_loader.ini';
+if (file_exists($config_file)) {
+    $config = parse_ini_file($config_file);
+    if (!empty($config['environment'])) {
+        $environment = $config['environment'];
+    }
+    if (!empty($config['umask_fix'])) {
+        umask(0000);
+    }
+}
+
+$input = new ArgvInput();
+$env = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: $environment);
+$debug = getenv('SYMFONY_DEBUG') !== '0' && !$input->hasParameterOption(array('--no-debug', '')) && $env !== 'prod';
+
+if ($debug) {
+    Debug::enable();
+}
+
+$kernel = new AppKernel($env, $debug);
+$application = new Application($kernel);
+$application->run($input);
