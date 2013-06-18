@@ -123,6 +123,15 @@ it may be good to leave only web/app.php in a production environment.
 As you can see in the examples, you can override any option after instantiating
 the AppLoader, but before `$app_loader->run();`
 
+Available options are:
+
+ * `environment`: (dev|test|prod)
+ * `debug`: (true|false) guessed automatically on environment == dev
+ * `http_cache`: (true|false) whether or not to use Symfony HTTP reverse proxy
+ * `localhost_only`: (true|false) whether or not to limit request to localhost when in dev mode
+ * `umask_fix`: (true|false) whether or not to change the umask to 0000
+ * `apc_cache_id`: (false|string) if a valid string, use this as an APC id for the caches
+
 ### Overridding behavior by extending AppLoader
 
 The provided AppLoader is fully overridable. You can extend it and modify your
