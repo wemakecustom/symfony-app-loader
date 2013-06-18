@@ -12,7 +12,7 @@ use Symfony\Component\Debug\Debug;
 
 $environment = 'dev';
 
-$config_file = __DIR__ . '/config/app_loader.ini';
+$config_file = __DIR__.'/config/app_loader.ini';
 if (file_exists($config_file)) {
     $config = parse_ini_file($config_file);
     if (!empty($config['environment'])) {
