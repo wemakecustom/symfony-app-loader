@@ -169,7 +169,7 @@ class AppLoader
 
     protected function enableDebug()
     {
-        if ($this->options['debug']) {
+        if ($this->options['debug'] && class_exists('Symfony\Component\Debug\Debug', true)) {
             Debug::enable();
         }
     }
