@@ -135,4 +135,4 @@ Available options are:
 ### Overridding behavior by extending AppLoader
 
 The provided AppLoader is fully overridable. You can extend it and modify your
-fron controllers to use yours instead. See app/AppLoader for an example.
+fron controllers to use yours instead. See sample/AppLoader for an example.
