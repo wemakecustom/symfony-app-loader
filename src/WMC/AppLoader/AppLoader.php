@@ -3,8 +3,14 @@
 namespace WMC\AppLoader;
 
 use Symfony\Component\ClassLoader\ApcClassLoader;
-use Symfony\Component\HttpFoundation\Request;
+
 use Symfony\Component\Debug\Debug;
+
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Instantiates a Symfony Kernel and run the Request handler
@@ -37,7 +43,13 @@ class AppLoader
      */
     protected $kernel = null;
 
-    function __construct($kernel_dir, $class_loader)
+    /**
+     * Symfony Console Application
+     * @var Symfony\Component\Console\Application
+     */
+    protected $application = null;
+
+    public function __construct($kernel_dir, $class_loader, $option_file = null)
     {
         if (!is_string($kernel_dir) || !is_file("$kernel_dir/AppKernel.php")) {
             throw new \InvalidArgumentException('Symfony AppLoader must be passed Symfony\'s app dir');
@@ -45,6 +57,7 @@ class AppLoader
 
         $this->kernel_dir   = $kernel_dir;
         $this->class_loader = $class_loader;
+        $this->loadOptions($option_file);
     }
 
     public function getDefaultOptionsFile()
@@ -111,7 +124,7 @@ class AppLoader
      */
     public function __get($key)
     {
-        return array_key_exists($key, $this->options) ? $this->options[$key] : null;
+        return isset($this->options[$key]) ? $this->options[$key] : null;
     }
 
     /**
@@ -125,17 +138,60 @@ class AppLoader
         return $this->options[$key] = $value;
     }
 
+
+    public function handleRequest()
+    {
+        $kernel = $this->getKernel();
+
+        Request::enableHttpMethodParameterOverride();
+        $request = Request::createFromGlobals();
+        $response = $kernel->handle($request);
+        $response->send();
+        $kernel->terminate($request, $response);
+    }
+ 
+    public function handleConsole(InputInterface $input = null, OutputInterface $output = null)
+    {
+        return $this->getApplication()->run($input, $output);
+    }
+
     public function run()
     {
-        if (null === $this->options) {
-            $this->loadOptions();
+        trigger_error('AppLoader#run is deprecated, please use handleRequest() instead', E_USER_DEPRECATED);
+        $this->handleRequest();
+    }
+
+
+    public function getApplication()
+    {
+        if (null === $this->application) {
+            $this->buildApplication();
         }
+
+        return $this->application;
+    }
+
+    public function getKernel()
+    {
+        if (null === $this->kernel) {
+            $this->buildKernel();
+        }
+
+        return $this->kernel;
+    }
+
+    protected function buildApplication()
+    {
+        $this->application = new Application($this->getKernel());
+    }
+
+    protected function buildKernel()
+    {
         $this->processOptions();
 
         $this->beforeKernel();
         $this->loadKernel();
         $this->afterKernel();
-        $this->handleRequest();
     }
 
     protected function beforeKernel()
@@ -215,14 +271,5 @@ class AppLoader
 
             $this->kernel = new \AppCache($this->kernel);
         }
-    }
-
-    protected function handleRequest()
-    {
-        Request::enableHttpMethodParameterOverride();
-        $request = Request::createFromGlobals();
-        $response = $this->kernel->handle($request);
-        $response->send();
-        $this->kernel->terminate($request, $response);
     }
 }
