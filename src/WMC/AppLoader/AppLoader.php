@@ -196,7 +196,10 @@ class AppLoader
 
     protected function beforeKernel()
     {
-        $this->enforceIpProtection();
+        if ('cli' !== PHP_SAPI) {
+            $this->enforceIpProtection();
+        }
+
         $this->enableDebug();
         $this->enableUmaskFix();
         $this->enableApcClassLoader();
