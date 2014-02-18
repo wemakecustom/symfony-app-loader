@@ -3,6 +3,9 @@
 
 set_time_limit(0);
 
+use WMC\AppLoader\AppLoader;
+use Symfony\Component\Console\Input\ArgvInput;
+
 $loader = require_once __DIR__.'/bootstrap.php.cache';
 
 $app_loader = new AppLoader(__DIR__ . '/../app', $loader);
