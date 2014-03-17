@@ -20,7 +20,7 @@
         "composer/composer": "*"
     },
     "autoload": {
-        "psr-4": { "WMC\\AppLoader": "src" }
+        "psr-4": { "WMC\\AppLoader\\": "src" }
     },
     "extra": {
         "branch-alias": {
