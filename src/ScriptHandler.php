@@ -4,7 +4,8 @@ namespace WMC\AppLoader;
 
 use Composer\IO\IOInterface;
 use Composer\Script\Event;
-use WMC\Composer\Utils\ConfigFile\YamlConfigFile;
+use WMC\Composer\Utils\ConfigFile\IniConfigFile;
+use WMC\Composer\Utils\Composer\PackageLocator;
 
 class ScriptHandler
 {
@@ -28,7 +29,7 @@ class ScriptHandler
 
             if (!is_file($distFile)) {
                 // using packaged dist file
-                $distFile = __DIR__ . '/../../../app/config/app_loader.ini.dist';
+                $distFile = PackageLocator::getPackagePath($event->getComposer(), 'wemakecustom/symfony-app-loader') . '/app/config/app_loader.ini.dist';
             }
         } else {
             $distFile = $extras['wmc-app-loader']['dist-file'];
@@ -39,7 +40,7 @@ class ScriptHandler
             $keepOutdatedParams = (bool) $extras['wmc-app-loader']['keep-outdated'];
         }
 
-        $yml = new YamlConfigFile($event->getIO());
+        $yml = new IniConfigFile($event->getIO());
         $yml->setKeepOutdatedParams($keepOutdatedParams);
         $yml->updateFile($realFile, $distFile);
     }
