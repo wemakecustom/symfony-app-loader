@@ -152,6 +152,8 @@ class AppLoader
  
     public function handleConsole(InputInterface $input = null, OutputInterface $output = null)
     {
+        $this->options['http_cache'] = false;
+
         return $this->getApplication()->run($input, $output);
     }
 
