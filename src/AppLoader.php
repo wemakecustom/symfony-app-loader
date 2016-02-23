@@ -175,16 +175,6 @@ class AppLoader
         return $this->getApplication()->run($input, $output);
     }
 
-    /**
-     * @deprecated Deprecated since version 1.0, to be removed in 2.0. Use handleRequest() instead.
-     */
-    public function run()
-    {
-        trigger_error('run() is deprecated since version 1.0 and will be removed in 2.0. Use handleRequest() instead.', E_USER_DEPRECATED);
-        $this->handleRequest();
-    }
-
-
     public function getApplication()
     {
         if (null === $this->application) {
