@@ -51,7 +51,7 @@ class AppLoader
 
     public function __construct($kernelDir, $classLoader, $optionFile = null)
     {
-        if (!is_string($kernelDir) || !is_file("$kernelDir/AppKernel.php")) {
+        if (!is_string($kernelDir) || !is_file($kernelDir.'/AppKernel.php')) {
             throw new \InvalidArgumentException('Symfony AppLoader must be passed Symfony\'s app dir');
         }
 
@@ -75,13 +75,13 @@ class AppLoader
                 return;
             }
         } elseif (!is_file($file)) {
-            throw new \InvalidArgumentException("$file does not exist");
+            throw new \InvalidArgumentException($file.' does not exist');
         }
 
         $options = parse_ini_file($file);
 
         if (!$options) {
-            throw new \RuntimeException("{$file} is not a valid ini file.");
+            throw new \RuntimeException($file.' is not a valid ini file.');
         }
 
         $this->options = $options;
@@ -137,7 +137,6 @@ class AppLoader
     {
         return $this->options[$key] = $value;
     }
-
 
     public function handleRequest()
     {
@@ -260,7 +259,7 @@ class AppLoader
 
     protected function loadKernel()
     {
-        require_once $this->kernelDir . '/AppKernel.php';
+        require_once $this->kernelDir.'/AppKernel.php';
 
         $this->kernel = new \AppKernel($this->options['environment'], $this->options['debug']);
         $this->kernel->loadClassCache();
@@ -272,7 +271,7 @@ class AppLoader
     protected function enableHttpCache()
     {
         if ($this->options['http_cache']) {
-            require_once $this->kernelDir . '/AppCache.php';
+            require_once $this->kernelDir.'/AppCache.php';
 
             $this->kernel = new \AppCache($this->kernel);
         }
