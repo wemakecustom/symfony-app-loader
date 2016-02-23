@@ -49,6 +49,12 @@ class AppLoader
      */
     protected $application = null;
 
+    /**
+     * Console input to initialize additional options
+     * @var InputInterface
+     */
+    protected $input;
+
     public function __construct($kernelDir, $classLoader, $optionFile = null)
     {
         if (!is_string($kernelDir) || !is_file($kernelDir.'/AppKernel.php')) {
@@ -90,22 +96,31 @@ class AppLoader
     protected function processOptions()
     {
         if (!isset($this->options['environment'])) {
-            $this->options['environment'] = 'prod';
+            $this->options['environment'] = getenv('SYMFONY_ENV') ?: 'prod';
         }
 
-        if (!isset($this->options['localhost_only']) || $this->options['environment'] != 'dev') {
+        if (null !== $this->input) {
+            $this->options['environment'] = $this->input->getParameterOption(['--env', '-e'], $this->options['environment']);
+        }
+
+        if (!isset($this->options['localhost_only']) || $this->options['environment'] == 'prod') {
             $this->options['localhost_only'] = false;
+        }
+
+        if (getenv('SYMFONY_DEBUG') === '0'
+            || (null !== $this->input
+                && $this->input->hasParameterOption(['--no-debug', '']))
+        ) {
+            $this->options['debug'] = false;
         }
 
         if (!isset($this->options['debug'])) {
             $this->options['debug'] = $this->options['environment'] == 'dev';
         }
 
-        if (isset($this->options['umask_fix'])) {
-            $this->options['umask_fix'] = (bool) $this->options['umask_fix'];
-        } else {
-            $this->options['umask_fix'] = false;
-        }
+        $this->options['umask_fix'] = isset($this->options['umask_fix'])
+                                      ? (bool) $this->options['umask_fix']
+                                      : false;
 
         if (empty($this->options['apc_cache_id']) || $this->options['environment'] != 'prod') {
             $this->options['apc_cache_id'] = false;
@@ -151,7 +166,9 @@ class AppLoader
  
     public function handleConsole(InputInterface $input = null, OutputInterface $output = null)
     {
+        $this->input = $input;
         $this->options['http_cache'] = false;
+        set_time_limit(0);
 
         return $this->getApplication()->run($input, $output);
     }

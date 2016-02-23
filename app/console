@@ -1,23 +1,10 @@
 #!/usr/bin/env php
 <?php
 
-set_time_limit(0);
-
 use WMC\AppLoader\AppLoader;
 use Symfony\Component\Console\Input\ArgvInput;
 
 $loader = require_once __DIR__.'/bootstrap.php.cache';
 
 $app_loader = new AppLoader(__DIR__ . '/../app', $loader);
-
-$input = new ArgvInput();
-
-$app_loader->environment = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: $app_loader->environment);
-
-if (getenv('SYMFONY_DEBUG') === '0') {
-    $app_loader->debug = false;
-} elseif ($input->hasParameterOption(array('--no-debug', ''))) {
-    $app_loader->debug = true;
-}
-
-$app_loader->handleConsole($input);
+$app_loader->handleConsole(new ArgvInput());
