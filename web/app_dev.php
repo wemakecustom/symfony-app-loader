@@ -2,7 +2,7 @@
 
 use WMC\AppLoader\AppLoader;
 
-$loader = require_once __DIR__.'/../app/bootstrap.php.cache';
+$loader = require __DIR__.'/../app/autoload.php';
 
 $app_loader = new AppLoader(__DIR__ . '/../app', $loader);
 $app_loader->environment = 'dev';

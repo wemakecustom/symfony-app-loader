@@ -155,6 +155,8 @@ class AppLoader
 
     public function handleRequest()
     {
+        $this->loadBootstrap();
+
         $kernel = $this->getKernel();
 
         Request::enableHttpMethodParameterOverride();
@@ -199,6 +201,22 @@ class AppLoader
         }
 
         return $this->kernel;
+    }
+
+    protected function loadBootstrap()
+    {
+        include_once $this->getBootstrapPath();
+    }
+
+    protected function getBootstrapPath()
+    {
+        if (is_file($path = $this->kernelDir.'/../var/bootstrap.php.cache')) {
+            return $path;
+        } elseif (is_file($path = $this->kernelDir.'/bootstrap.php.cache')) {
+            return $path;
+        } else {
+            throw new \RuntimeException('Cannot find a bootstrap file');
+        }
     }
 
     protected function buildApplication()
