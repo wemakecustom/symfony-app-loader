@@ -17,9 +17,9 @@ class ScriptHandler
             if (empty($extras['symfony-app-dir'])) {
                 throw new \InvalidArgumentException('Either extra.symfony-app-dir or extra.wmc-app-loader.file setting are required to use this script handler.');
             }
-            $app_dir = $extras['symfony-app-dir'];
-            $app_loader = new AppLoader($app_dir, null);
-            $realFile = $app_loader->getDefaultOptionsFile();
+            $appDir = $extras['symfony-app-dir'];
+            $appLoader = new AppLoader($appDir, null);
+            $realFile = $appLoader->getDefaultOptionsFile();
         } else {
             $realFile = $extras['wmc-app-loader']['file'];
         }

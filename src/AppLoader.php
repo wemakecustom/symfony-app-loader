@@ -18,19 +18,19 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class AppLoader
 {
-    protected static $options_file = 'config/app_loader.ini';
+    protected static $optionsFile = 'config/app_loader.ini';
 
     /**
      * Root Symonfy dir (app directory)
      * @var string
      */
-    protected $kernel_dir;
+    protected $kernelDir;
 
     /**
      * ClassLoader, must implement findFile
      * @var object
      */
-    protected $class_loader;
+    protected $classLoader;
 
     /**
      * @var array
@@ -49,20 +49,20 @@ class AppLoader
      */
     protected $application = null;
 
-    public function __construct($kernel_dir, $class_loader, $option_file = null)
+    public function __construct($kernelDir, $classLoader, $optionFile = null)
     {
-        if (!is_string($kernel_dir) || !is_file("$kernel_dir/AppKernel.php")) {
+        if (!is_string($kernelDir) || !is_file("$kernelDir/AppKernel.php")) {
             throw new \InvalidArgumentException('Symfony AppLoader must be passed Symfony\'s app dir');
         }
 
-        $this->kernel_dir   = $kernel_dir;
-        $this->class_loader = $class_loader;
-        $this->loadOptions($option_file);
+        $this->kernelDir   = $kernelDir;
+        $this->classLoader = $classLoader;
+        $this->loadOptions($optionFile);
     }
 
     public function getDefaultOptionsFile()
     {
-        return $this->kernel_dir . '/' . static::$options_file;
+        return $this->kernelDir . '/' . static::$optionsFile;
     }
 
     protected function loadOptions($file = null)
@@ -253,14 +253,14 @@ class AppLoader
     protected function enableApcClassLoader()
     {
         if ($this->options['apc_cache_id']) {
-            $this->class_loader = new ApcClassLoader($this->options['apc_cache_id'], $this->class_loader);
-            $this->class_loader->register(true);
+            $this->classLoader = new ApcClassLoader($this->options['apc_cache_id'], $this->classLoader);
+            $this->classLoader->register(true);
         }
     }
 
     protected function loadKernel()
     {
-        require_once $this->kernel_dir . '/AppKernel.php';
+        require_once $this->kernelDir . '/AppKernel.php';
 
         $this->kernel = new \AppKernel($this->options['environment'], $this->options['debug']);
         $this->kernel->loadClassCache();
@@ -272,7 +272,7 @@ class AppLoader
     protected function enableHttpCache()
     {
         if ($this->options['http_cache']) {
-            require_once $this->kernel_dir . '/AppCache.php';
+            require_once $this->kernelDir . '/AppCache.php';
 
             $this->kernel = new \AppCache($this->kernel);
         }
