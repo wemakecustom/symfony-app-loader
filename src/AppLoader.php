@@ -52,7 +52,7 @@ class AppLoader
     public function __construct($kernelDir, $classLoader, $optionFile = null)
     {
         if (!is_string($kernelDir) || !is_file($kernelDir.'/AppKernel.php')) {
-            throw new \InvalidArgumentException('Symfony AppLoader must be passed Symfony\'s app dir');
+            throw new \InvalidArgumentException('Symfony AppLoader must be given a Symfony app dir path');
         }
 
         $this->kernelDir   = $kernelDir;
