@@ -27,7 +27,7 @@ class AppLoader
     protected $kernelDir;
 
     /**
-     * ClassLoader, must implement findFile
+     * ClassLoader, must have a findFile method
      * @var object
      */
     protected $classLoader;
@@ -39,13 +39,13 @@ class AppLoader
 
     /**
      * Symfony Kernel
-     * @var Symfony\Component\HttpKernel\Kernel
+     * @var Kernel
      */
     protected $kernel = null;
 
     /**
      * Symfony Console Application
-     * @var Symfony\Component\Console\Application
+     * @var Application
      */
     protected $application = null;
 
@@ -212,7 +212,8 @@ class AppLoader
     }
 
     /**
-     * This check prevents access to debug front controllers that are deployed by accident to production servers.
+     * Prevent access to debug front controllers that are deployed by accident
+     * to production servers.
      */
     protected function enforceIpProtection()
     {
