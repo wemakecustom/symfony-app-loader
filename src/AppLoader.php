@@ -298,7 +298,9 @@ class AppLoader
 
     protected function loadKernel()
     {
-        require_once $this->kernelDir.'/AppKernel.php';
+        if (!class_exists('AppKernel', false)) {
+            require_once $this->kernelDir.'/AppKernel.php';
+        }
 
         $this->kernel = new \AppKernel($this->options['environment'], $this->options['debug']);
         $this->kernel->loadClassCache();
