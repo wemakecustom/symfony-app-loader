@@ -19,15 +19,24 @@
         "php": ">=5.3.3",
         "symfony/framework-bundle": "^2.3|^3.0",
         "sensio/distribution-bundle": "^4.0|^5.0",
-        "wemakecustom/composer-script-utils": ">=0.2"
+        "wemakecustom/composer-script-utils": "^2.0"
     },
     "require-dev": {
         "composer/composer": "*"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "WMC\\AppLoader\\ScriptHandler::buildParameters"
+        ],
+        "post-update-cmd": [
+            "WMC\\AppLoader\\ScriptHandler::buildParameters"
+        ]
     },
     "autoload": {
         "psr-4": { "WMC\\AppLoader\\": "src" }
     },
     "extra": {
+        "wmc-app-loader": { "file": "app/config/app_loader.ini" },
         "branch-alias": {
             "dev-master": "2.x-dev"
         }

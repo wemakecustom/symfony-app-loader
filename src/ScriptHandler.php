@@ -7,6 +7,8 @@ use Composer\Script\Event;
 use WMC\Composer\Utils\ConfigFile\IniConfigFile;
 use WMC\Composer\Utils\Composer\PackageLocator;
 
+use WMC\Composer\Utils\ScriptHandler as Utils;
+
 class ScriptHandler
 {
     public static function buildParameters(Event $event)
@@ -40,8 +42,9 @@ class ScriptHandler
             $keepOutdatedParams = (bool) $extras['wmc-app-loader']['keep-outdated'];
         }
 
-        $yml = new IniConfigFile($event->getIO());
-        $yml->setKeepOutdatedParams($keepOutdatedParams);
-        $yml->updateFile($realFile, $distFile);
+        $updater = Utils::createConfigFileUpdate($event->getIO());
+
+        $updater->getConfigMerger()->setKeepOutdatedParams($keepOutdatedParams);
+        $updater->updateFile($realFile, $distFile);
     }
 }
